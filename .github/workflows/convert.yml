@@ -21,12 +21,7 @@ jobs:
 
     - name: Convert to ONNX
       run: |
-        python -c "
-import coremltools as ct
-mlmodel = ct.models.MLModel('ocr_model.mlmodel')
-onnx_model = ct.converters.onnx.convert(mlmodel)
-onnx_model.save('ocr_model.onnx')
-"
+        python convert.py
 
     - name: Upload ONNX artifact
       uses: actions/upload-artifact@v3
