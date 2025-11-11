@@ -1,0 +1,35 @@
+name: Convert Core ML to ONNX
+
+on:
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install coremltools
+      run: pip install coremltools
+
+    - name: Convert to ONNX
+      run: |
+        python -c "
+import coremltools as ct
+mlmodel = ct.models.MLModel('ocr_model.mlmodel')
+onnx_model = ct.converters.onnx.convert(mlmodel)
+onnx_model.save('ocr_model.onnx')
+"
+
+    - name: Upload ONNX artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: onnx-model
+        path: ocr_model.onnx
